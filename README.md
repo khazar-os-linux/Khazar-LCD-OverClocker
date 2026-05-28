@@ -29,7 +29,7 @@ Supported package managers: `pacman`, `apt`, `dnf`.
 ## Usage
 1. 
 ```bash
-git clone 
+git clone https://github.com/khazar-os-linux/Khazar-LCD-OverClocker.git
 ```
 
 2. 
