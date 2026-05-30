@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "$(dirname "${BASH_SOURCE[0]}")/start.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/shared-lib.sh"
 
 # 1. DEPENDENCY CHECK
 info "Checking required tools..."
@@ -16,9 +16,9 @@ install_pkg() {
     local pkg="$1" pm
     pm=$(detect_pkg_manager)
     case "$pm" in
-        pacman) sudo pacman -S --noconfirm "$pkg" ;;
-        apt)    sudo apt install -y "$pkg" ;;
-        dnf)    sudo dnf install -y "$pkg" ;;
+        pacman) elevate pacman -S --noconfirm "$pkg" ;;
+        apt)    elevate apt install -y "$pkg" ;;
+        dnf)    elevate dnf install -y "$pkg" ;;
         *)      error "No package manager found. Install '$pkg' manually." ;;
     esac
 }

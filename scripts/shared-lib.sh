@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/start.sh - Shared colors and helper functions
+# scripts/shared-lib.sh - Shared colors and helper functions
 # Source this file; do not execute directly.
 
 RED='\033[0;31m'
@@ -26,6 +26,17 @@ confirm() {
 }
 
 : "${STATE_FILE:?STATE_FILE is not set. Run edid_overclock.sh instead.}"
+
+# Privilege escalation helper
+if command -v sudo &>/dev/null; then
+    PRIV="sudo"
+elif command -v doas &>/dev/null; then
+    PRIV="doas"
+else
+    PRIV=""
+fi
+
+elevate() { ${PRIV:?No sudo or doas found.} "$@"; }
 
 state_load() {
     [[ -f "$STATE_FILE" ]] || error "State file not found. Did you run the previous steps?"

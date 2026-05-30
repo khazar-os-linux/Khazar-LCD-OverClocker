@@ -1,23 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "$(dirname "${BASH_SOURCE[0]}")/start.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/shared-lib.sh"
 state_load
 
 # 4. EDID PATCH
-DTD1_LINE=$(edid-decode "$ORIG_BIN" 2>/dev/null | grep "DTD 1:" -A2)
-HFRONT=$(echo "$DTD1_LINE" | grep -oP 'Hfront\s+\K\d+')
-HSYNC=$( echo "$DTD1_LINE" | grep -oP 'Hsync\s+\K\d+')
-HBACK=$( echo "$DTD1_LINE" | grep -oP 'Hback\s+\K\d+')
-VFRONT=$(echo "$DTD1_LINE" | grep -oP 'Vfront\s+\K\d+')
-VSYNC=$( echo "$DTD1_LINE" | grep -oP 'Vsync\s+\K\d+')
-VBACK=$( echo "$DTD1_LINE" | grep -oP 'Vback\s+\K\d+')
-
-HTOTAL=$(( W + HFRONT + HSYNC + HBACK ))
-VTOTAL=$(( H + VFRONT + VSYNC + VBACK ))
-PCLK_10KHZ=$(( HTOTAL * VTOTAL * TARGET_HZ / 10000 ))
-
-info "Timing: Htotal=${HTOTAL}, Vtotal=${VTOTAL}, pclk≈$(( PCLK_10KHZ / 100 )).$(( PCLK_10KHZ % 100 )) MHz"
-
 OUT_BIN="$STATE_FILE.patched.bin"
 
 python3 - <<PYEOF

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "$(dirname "${BASH_SOURCE[0]}")/start.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/shared-lib.sh"
 state_load
 
 # 6. BOOT PARAMETER
@@ -21,12 +21,12 @@ if [[ "$BOOTLOADER" == "grub" ]]; then
         success "GRUB parameter already present."
     else
         confirm "Add '$GRUB_PARAM' to GRUB_CMDLINE_LINUX_DEFAULT?" "y" && {
-            sudo sed -i "s|^GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"|GRUB_CMDLINE_LINUX_DEFAULT=\"\1 $GRUB_PARAM\"|" "$GRUB_CFG"
+            elevate sed -i "s|^GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"|GRUB_CMDLINE_LINUX_DEFAULT=\"\1 $GRUB_PARAM\"|" "$GRUB_CFG"
             success "GRUB config updated."
         }
     fi
     confirm "Run grub-mkconfig?" "y" && {
-        sudo grub-mkconfig -o /boot/grub/grub.cfg
+        elevate grub-mkconfig -o /boot/grub/grub.cfg
         success "GRUB rebuilt."
     }
 elif [[ "$BOOTLOADER" == "systemd-boot" ]]; then

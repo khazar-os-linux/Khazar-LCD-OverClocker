@@ -63,7 +63,7 @@ The script walks you through each step interactively. Answering `n` to any promp
 ```
 edid_overclock.sh        # Entry point: disclaimer + step runner
 scripts/
-  start.sh               # Shared colors, helpers, state load/save (sourced)
+  shared-lib.sh               # Shared colors, helpers, state load/save (sourced)
   01_deps.sh
   02_display.sh
   03_cvt.sh

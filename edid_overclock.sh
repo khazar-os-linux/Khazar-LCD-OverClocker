@@ -6,7 +6,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export STATE_FILE="/tmp/edid_state_$$"
-source "$SCRIPT_DIR/scripts/start.sh"
+source "$SCRIPT_DIR/scripts/shared-lib.sh"
 
 # WARNING
 clear
@@ -24,6 +24,34 @@ echo
 confirm "I understand and accept all risks. I want to continue." "n" \
     || { echo "Cancelled."; exit 0; }
 echo
+
+# DETECT PATCHED EDID
+FIRMWARE_EXISTS=0
+CMDLINE_SET=0
+[[ -f /lib/firmware/edid/edid_overclocked.bin ]] && FIRMWARE_EXISTS=1
+grep -q "drm.edid_firmware" /proc/cmdline 2>/dev/null && CMDLINE_SET=1
+
+if [[ "$FIRMWARE_EXISTS" -eq 1 || "$CMDLINE_SET" -eq 1 ]]; then
+    if [[ "$FIRMWARE_EXISTS" -eq 1 && "$CMDLINE_SET" -eq 0 ]]; then
+        warn "Firmware file found but kernel parameter is missing — previous overclock may be incomplete."
+    elif [[ "$FIRMWARE_EXISTS" -eq 0 && "$CMDLINE_SET" -eq 1 ]]; then
+        warn "Kernel parameter set but firmware file missing — system may be misconfigured."
+    else
+        warn "Patched EDID detected on this system."
+    fi
+    echo
+    echo "  1) Revert to defaults"
+    echo "  2) Overclock (apply new patch)"
+    echo
+    echo -en "${BLD}Your choice [1/2]: ${RST}"
+    read -r CHOICE
+    case "$CHOICE" in
+        1) bash "$SCRIPT_DIR/scripts/revert.sh"; exit 0 ;;
+        2) ;;
+        *) echo "Cancelled."; exit 0 ;;
+    esac
+    echo
+fi
 
 STEPS=(
     "01_deps.sh:Dependency Check"
