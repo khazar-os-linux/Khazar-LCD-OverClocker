@@ -2,7 +2,7 @@
 
 A bash tool that patches your display's EDID firmware to unlock higher refresh rates beyond the manufacturer's default.
 
-<img width="2000" height="300" alt="Khazar LCD OverClocker" src="https://github.com/user-attachments/assets/9002b2e1-76d1-494a-89b0-ca171637635f" />
+<img width="300" height="300" alt="Khazar LCD OverClocker" src="https://github.com/user-attachments/assets/9002b2e1-76d1-494a-89b0-ca171637635f" />
 
 
 > **Warning:** This may permanently damage your LCD panel. Use at your own risk.
